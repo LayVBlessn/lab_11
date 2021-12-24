@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Лаба 9</title>
+    <script>
+      method_url= location.protocol + "//" + location.host + "/hypothesis/view.json"
+
+        function send_query() {
+          const frm = document.forms.my_form;
+          const param_str = "?" + "number=" + frm.number.value;
+          if (param_str === "") return false;
+          let my_JSON_object = {};
+          const http_request = new XMLHttpRequest();
+          http_request.open("GET", method_url+param_str, true);
+          http_request.onreadystatechange = function () {
+              const done = 4, ok = 200;
+              if (http_request.readyState === done && http_request.status === ok) {
+                  my_JSON_object = JSON.parse(http_request.responseText);
+                  show_result(my_JSON_object);
+              }
+          };
+          http_request.send(null);
+          return false;
+      }
+
+        function show_result(data) {
+          var result = document.getElementById("result");
+          console.log(typeof result)
+          if (data.value_result === null){
+              result.innerHTML = "<hr/>Введите корректные данные!<hr/>";
+          }
+          else {
+              result.innerHTML = "<hr/>Результат: " + data.value_result;
+          }
+      }
+
+  </script>
+</head>
+<body>
+  <h1>Текст задания: </h1>
+  <p>Существует гипотеза, что для любого натурального числа, если оно
+  не палиндром, можно получить палиндром за конечное число шагов по
+  следующей схеме. Меняем порядок его цифр на обратный и складываем исходное число с получившимся. Если сумма не палиндром, то над
+  ней повторяется то же действие и так до тех пор, пока не получится
+  палиндром. Написать программу, подтверждающую эту гипотезу и выводящую результаты на каждом шаге в формате: номер шага, текущее
+  значение, указание подтверждена ли гипотеза или нет.<p>
+
+<h3>Введите число, чтобы проверить гипотезу</h3>
+<form action="/hypothesis/view" accept-charset="UTF-8" method="get" name="my_form" >
+  <label for = 'v1'>Число:</label>
+  <input type="text" name="number" id="number" value="174" />
+  <br><br>
+  <input type = "submit" name = "commit" value = "Отправить" onclick="return send_query();"/>
+</form>
+<div id="result"></div>
